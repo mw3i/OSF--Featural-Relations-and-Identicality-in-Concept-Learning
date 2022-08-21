@@ -1,0 +1,9 @@
+In this experiment, you will be shown examples of two different species of flowers: Setosas and Versicolors.  Your task is to learn to tell whether a flower belongs the Setosa species or the Versicolor species.
+
+As you are shown each example, you will be asked to decide its species.  You will receive feedback on each trial to help you learn.  At first you will just have to guess, but you will gain experience as you go.  It may not be easy, but before long, you should develop a good sense of the two species of flowers. 
+
+The experiment will start with 5 rounds of training. However, if you can figure out the solution before then, the experiment will skip to the next phase.
+
+After training, you will be tested on your understanding of the two categories.
+
+Good luck!

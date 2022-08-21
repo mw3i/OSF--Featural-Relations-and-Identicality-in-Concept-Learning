@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <!-- webrunner dependency -->
+        <script src='static/utils.js'></script>
+
+        <!-- materials -->
+        <script src='static/experiments/de2/materials/ocanvas-2.10.0.js'></script>
+        <script src='static/experiments/de2/materials/stimuli.js'></script>
+
+        <!-- experiment phases -->
+        <script src='static/experiments/de2/instructions.js'></script>
+        <script src='static/experiments/de2/edgeClassification.js'></script>
+        <script src='static/experiments/de2/edgeObservation.js'></script>
+
+    </head>
+
+    <body style = 'background: rgb(208, 213, 219);'>
+        <div id='main'></div>
+
+        <script type="text/javascript">
+            // window.onbeforeunload = function() { return "Are you sure you want to go back? Your data will not be saved"; }
+
+            // Variable to store subject info & data
+            subject = {
+                // id: '{{ current_user.id }}',
+                // condition: '{{ current_user.condition }}',
+                id: '0',
+                condition: '1',
+                results: {
+                    'trainingPhase': [],
+                    'generalizationPhase': [],
+                }
+            }
+
+            stim = stimuli.generatePairs()
+
+            // event graph that triggers progression of experiment
+            eventGraph = {
+
+				startingInstructions: {
+                    '1': function() {
+    					instructions.start(
+    						{instructions: stimuli['startingInstructions'][subject['condition']]}, // <-- stimuli comes from `materials/stimuli.py`
+    						// eventGraph.end()
+                            eventGraph.trainingPhase[subject['condition']]
+    					)
+                    },
+                    '2': function() {
+    					instructions.start(
+    						{instructions: stimuli['startingInstructions'][subject['condition']]}, // <-- stimuli comes from `materials/stimuli.py`
+    						// eventGraph.end()
+                            eventGraph.trainingPhase[subject['condition']]
+    					)
+    				},
+                },
+
+                trainingPhase: {
+                    '1': function() {
+                        edgeClassification.start(
+                            {
+                              'pairs': stim.training,
+                              'n_blocks': 1,
+                              'results': subject['results']['trainingPhase'], // <-- where to store the results
+                              'feedback': true,
+                            },
+                            eventGraph.generalizationPhaseInstructions
+                        )
+                    },
+                    '2': function() {
+                        edgeObservation.start(
+                            {
+                              'pairs': stim.observation,
+                              'n_blocks': 1,
+                              'results': subject['results']['trainingPhase'], // <-- where to store the results
+                              'feedback': true,
+                            },
+                            eventGraph.generalizationPhaseInstructions
+                        )
+                    },
+                },
+
+                generalizationPhaseInstructions: function () {
+                    instructions.start(
+						{instructions: stimuli['generalizationPhaseInstructions']}, // <-- stimuli comes from `materials/stimuli.py`
+						eventGraph.generalizationPhase
+					)
+                },
+
+                generalizationPhase: function() {
+                    edgeClassification.start(
+                        {
+                          'pairs': stim.generalization,
+                          'n_blocks': 1,
+                          'results': subject['results']['generalizationPhase'], // <-- where to store the results
+                          'feedback': false,
+                        },
+                        eventGraph.end
+                    )
+                },
+
+				end: function () {
+					instructions.start(
+                        {instructions: stimuli['exitInstructions']},
+                        function () {
+                            next('hey', subject['id'], subject['condition'], subject)
+                        }
+                    )
+				}
+
+            }
+
+            eventGraph.startingInstructions[subject['condition']]()
+            // eventGraph.trainingPhase[subject['condition']]()
+
+        </script>
+
+    </body>
+
+</html>
