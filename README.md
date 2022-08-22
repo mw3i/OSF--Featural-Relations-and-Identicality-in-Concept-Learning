@@ -10,6 +10,7 @@ UNLICENSE: Any of the figures, materials, & experiment code may be used/edited w
 # Basic Organization
 
 <!-- - `manuscript.md` paper as a markdown file -->
+
 - `.bib` bibtex of all the references used in the paper (with duplicates and orphans)
 - `figures` contains all the figures used for the manuscript. 
 - `materials & analysis`: each experiment contains a `analysis` folder and a `materials` folder
